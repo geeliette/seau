@@ -1,3 +1,4 @@
+import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { supabase } from '../../lib/supabase';
@@ -7,6 +8,7 @@ import { BucketItem, Category } from '../../types/index';
 export default function BucketScreen() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [items, setItems] = useState<BucketItem[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     supabase.from('categories').select('*').then(({ data }) => {
@@ -48,6 +50,7 @@ export default function BucketScreen() {
                 <TouchableOpacity
                   key={item.id}
                   style={[styles.bubble, { backgroundColor: category?.color ?? '#EAE8E1' }]}
+                  onPress={() => router.push(`/bucket/${item.id}`)}
                 >
                   <Text style={[styles.bubbleText, { color: category?.text_color ?? '#5F5E5A' }]}>
                     {item.title}
@@ -71,6 +74,7 @@ export default function BucketScreen() {
                 <TouchableOpacity
                   key={item.id}
                   style={[styles.bubble, { backgroundColor: category.color }]}
+                  onPress={() => router.push(`/bucket/${item.id}`)}
                 >
                   <Text style={[styles.bubbleText, { color: category.text_color }]}>
                     {item.title}

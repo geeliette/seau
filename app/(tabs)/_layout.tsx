@@ -1,33 +1,45 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import React from 'react';
-
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: '#2C2C2A',
+        tabBarInactiveTintColor: '#A8A59D',
+        tabBarStyle: {
+          backgroundColor: '#F5F3EE',
+          borderTopColor: '#D8D5CC',
+          borderTopWidth: 0.5,
+        },
         headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name="bucket"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: 'Bucket',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="archive-outline" size={size} color={color} />
+          ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="plan"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Plan',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="sunny-outline" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="diary"
+        options={{
+          title: 'Diary',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="book-outline" size={size} color={color} />
+          ),
         }}
       />
     </Tabs>

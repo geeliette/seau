@@ -9,6 +9,16 @@ export const styles = StyleSheet.create({
       padding: 20,
       paddingTop: 60,
     },
+    detailHeader: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: 20,
+    },
+    editText: {
+      fontSize: 13,
+      color: '#5F5E5A',
+    },
     backButton: {
       marginBottom: 20,
     },

@@ -42,10 +42,15 @@ export default function BucketItemDetail() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
 
-      {/* Back button */}
-      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-        <Text style={styles.backText}>← Bucket</Text>
-      </TouchableOpacity>
+      {/* Header */}
+      <View style={styles.detailHeader}>
+        <TouchableOpacity onPress={() => router.back()}>
+          <Text style={styles.backText}>← Bucket</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => router.push(`/bucket/edit?id=${item.id}` as any)}>
+          <Text style={styles.editText}>Edit</Text>
+        </TouchableOpacity>
+      </View>
 
       {/* Category pill */}
       {category && (

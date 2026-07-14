@@ -55,6 +55,7 @@ diary_entries       id, title, body, date, created_at
 - Supabase client lives in `lib/supabase.ts`.
 - Design tokens: parchment base color `#F5F3EE`, DM Serif Display for wordmarks, Montaga for UI text, pastel category-coded bubbles.
 - Commit after every meaningful change with a clear, conventional message (e.g. `feat: add pinned section to bucket screen`).
+- Do not run `git add`, `git commit`, or `git push` yourself. I do all committing. You can suggest a commit message when a change is ready, but leave the actual commit to me.
 
 ## Current state
 

@@ -1,5 +1,5 @@
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useFocusEffect, useLocalSearchParams, useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import { styles } from '../../styles/bucketDetail.styles';
@@ -12,24 +12,26 @@ export default function BucketItemDetail() {
   const [item, setItem] = useState<BucketItem | null>(null);
   const [category, setCategory] = useState<Category | null>(null);
 
-  useEffect(() => {
-    supabase
-      .from('bucket_items')
-      .select('*')
-      .eq('id', id)
-      .single()
-      .then(({ data }) => {
-        if (data) {
-          setItem(data);
-          supabase
-            .from('categories')
-            .select('*')
-            .eq('id', data.category_id)
-            .single()
-            .then(({ data: catData }) => setCategory(catData));
-        }
-      });
-  }, [id]);
+  useFocusEffect(
+    useCallback(() => {
+      supabase
+        .from('bucket_items')
+        .select('*')
+        .eq('id', id)
+        .single()
+        .then(({ data }) => {
+          if (data) {
+            setItem(data);
+            supabase
+              .from('categories')
+              .select('*')
+              .eq('id', data.category_id)
+              .single()
+              .then(({ data: catData }) => setCategory(catData));
+          }
+        });
+    }, [id])
+  );
 
   if (!item) {
     return (

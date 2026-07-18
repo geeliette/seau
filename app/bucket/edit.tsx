@@ -6,13 +6,14 @@ import { styles } from '../../styles/bucketEdit.styles';
 import { BucketItem, Category } from '../../types/index';
 
 export default function EditBucketItem() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id } = useLocalSearchParams<{ id?: string }>();
   const router = useRouter();
 
   const [item, setItem] = useState<BucketItem | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
 
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
@@ -24,31 +25,45 @@ export default function EditBucketItem() {
   const [pinned, setPinned] = useState(false);
 
   useEffect(() => {
-    Promise.all([
-      supabase.from('bucket_items').select('*').eq('id', id).single(),
-      supabase.from('categories').select('*'),
-    ]).then(([{ data: itemData }, { data: catData }]) => {
-      if (itemData) {
-        setItem(itemData);
-        setTitle(itemData.title ?? '');
-        setDescription(itemData.description ?? '');
-        setLocation(itemData.location ?? '');
-        setDuration(itemData.duration ?? '');
-        setLink(itemData.link ?? '');
-        setNotes(itemData.notes ?? '');
-        setCategoryId(itemData.category_id);
-        setPinned(itemData.pinned);
-      }
-      setCategories(catData ?? []);
-      setLoading(false);
-    });
+    if (id) {
+      Promise.all([
+        supabase.from('bucket_items').select('*').eq('id', id).single(),
+        supabase.from('categories').select('*'),
+      ]).then(([{ data: itemData }, { data: catData }]) => {
+        if (itemData) {
+          setItem(itemData);
+          setTitle(itemData.title ?? '');
+          setDescription(itemData.description ?? '');
+          setLocation(itemData.location ?? '');
+          setDuration(itemData.duration ?? '');
+          setLink(itemData.link ?? '');
+          setNotes(itemData.notes ?? '');
+          setCategoryId(itemData.category_id);
+          setPinned(itemData.pinned);
+        }
+        setCategories(catData ?? []);
+        setLoading(false);
+      });
+    } else {
+      supabase.from('categories').select('*').then(({ data }) => {
+        setCategories(data ?? []);
+        setLoading(false);
+      });
+    }
   }, [id]);
 
   const handleSave = async () => {
-    setSaving(true);
-    const { error } = await supabase
-      .from('bucket_items')
-      .update({
+    if (!title.trim() && !categoryId) {
+      setValidationError('Please add a title and select a category');
+    } else if (!title.trim()) {
+      setValidationError('Please add a title');
+    } else if (!categoryId) {
+      setValidationError('Please select a category');
+    } else {
+      setValidationError(null);
+      setSaving(true);
+
+      const fields = {
         title,
         description: description || null,
         location: location || null,
@@ -57,11 +72,18 @@ export default function EditBucketItem() {
         notes: notes || null,
         category_id: categoryId,
         pinned,
-      })
-      .eq('id', id);
+      };
 
-    setSaving(false);
-    if (!error) router.back();
+      if (id) {
+        const { error } = await supabase.from('bucket_items').update(fields).eq('id', id);
+        if (!error) router.back();
+      } else {
+        const { data, error } = await supabase.from('bucket_items').insert(fields).select().single();
+        if (!error && data) router.replace(`/bucket/${data.id}`);
+      }
+    
+      setSaving(false);
+    }
   };
 
   if (loading) {
@@ -83,6 +105,7 @@ export default function EditBucketItem() {
           <Text style={styles.save}>{saving ? 'Saving...' : 'Save'}</Text>
         </TouchableOpacity>
       </View>
+      {validationError && <Text style={styles.validationError}>{validationError}</Text>} 
 
       <Text style={styles.label}>Title</Text>
       <TextInput

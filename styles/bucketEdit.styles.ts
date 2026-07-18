@@ -14,6 +14,12 @@ export const styles = StyleSheet.create({
       justifyContent: 'space-between',
       marginBottom: 32,
     },
+    validationError: {
+      fontSize: 13,
+      color: '#B3543E',
+      marginTop: -20,
+      marginBottom: 20,
+    },
     cancel: {
       fontSize: 15,
       color: '#888780',

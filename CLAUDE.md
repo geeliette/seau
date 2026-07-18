@@ -59,6 +59,6 @@ diary_entries       id, title, body, date, created_at
 
 ## Current state
 
-Bucket screen fetches categories and bucket_items from Supabase, renders pinned items and category-grouped bubbles, navigates to a detail screen on tap. Not yet done: wiring the header's add (+) and filter (⊞) buttons, filtering UI, loading/empty states. Plan and Diary screens not yet built.
+Bucket screen fetches categories and bucket_items from Supabase, renders pinned items and category-grouped bubbles, navigates to a detail screen on tap. The header's add (+) button is wired up: it navigates to `app/bucket/edit.tsx` with no `id`, which now handles both creating (insert) and editing (update) a bucket item, with inline validation requiring a title and category. Bucket screen and the detail screen (`app/bucket/[id].tsx`) both refetch their data on focus (via `useFocusEffect`) rather than only on mount, so edits and new items show up immediately when navigating back rather than requiring a manual refresh. Not yet done: wiring the filter (⊞) button, filtering UI, loading/empty states. Plan and Diary screens not yet built.
 
 > **Keep this section current.** At the end of a session where we finished or meaningfully progressed a feature, update this section to reflect it — what's working, what's next. Keep it short (a few sentences), factual, and free of speculation about future features we haven't discussed. Don't rewrite other sections of this file without me asking.

@@ -1,5 +1,5 @@
-import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useFocusEffect, useRouter } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import { styles } from '../../styles/bucket.styles';
@@ -10,14 +10,16 @@ export default function BucketScreen() {
   const [items, setItems] = useState<BucketItem[]>([]);
   const router = useRouter();
 
-  useEffect(() => {
-    supabase.from('categories').select('*').then(({ data }) => {
-      setCategories(data ?? []);
-    });
-    supabase.from('bucket_items').select('*').then(({ data }) => {
-      setItems(data ?? []);
-    });
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      supabase.from('categories').select('*').then(({ data }) => {
+        setCategories(data ?? []);
+      });
+      supabase.from('bucket_items').select('*').then(({ data }) => {
+        setItems(data ?? []);
+      });
+    }, [])
+  );
 
   const pinnedItems = items.filter(item => item.pinned);
   const itemsByCategory = (categoryId: string) =>
@@ -33,7 +35,9 @@ export default function BucketScreen() {
           <TouchableOpacity style={styles.iconButton}>
             <Text style={styles.iconText}>⊞</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.iconButton}>
+          <TouchableOpacity 
+            style={styles.iconButton}
+            onPress={() => router.push('/bucket/edit')}>
             <Text style={styles.iconText}>+</Text>
           </TouchableOpacity>
         </View>
